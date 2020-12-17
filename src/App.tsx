@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import { uuid } from 'uuidv4';
 
@@ -10,20 +10,24 @@ interface Task {
 }
 
 function App() {
-  const [taskDraft, setTaskDraft] = useState<string>('New Task');
+  const [taskDraft, setTaskDraft] = useState<string>('create an awesome app with react');
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [tasks, setTasks] = useState<Task[]>([]);
 
   useEffect(() => {
-    const taksString = localStorage.getItem('tasks');
-    if (taksString) {
-      setTasks(JSON.parse(taksString));
+    if (localStorage) {
+      const taksString = localStorage.getItem('tasks');
+      if (taksString) {
+        setTasks(JSON.parse(taksString));
+      }
     }
   }, []);
 
   useEffect(() => {
-    const tasksString = JSON.stringify(tasks);
-    localStorage.setItem('tasks', tasksString);
+    if (localStorage) {
+      const tasksString = JSON.stringify(tasks);
+      localStorage.setItem('tasks', tasksString);
+    }
   }, [tasks]);
 
   function handleAddTask() {
@@ -36,7 +40,7 @@ function App() {
 
     let newTask : Task = {
       id: uuid(),
-      description: "Ir ao mercado comprar ovo.",
+      description: taskDraft,
       done: false,
       createdAt: new Date()
     };
@@ -68,22 +72,39 @@ function App() {
   }
 
   return (
-    <div className="App">
-      <h1>Todo List</h1>
-      <button type="button" onClick={handleClearTaskList}>Clear Tasks</button>
-      <input type="text" value={taskDraft} onChange={e => setTaskDraft(e.target.value)} ></input>
-      <button type="button" onClick={handleAddTask}>Adicionar Tarefa</button>
-      {errorMessage && <p>{errorMessage}</p>}
-      {tasks.map(task => {
-        return <div style={{ border: '1px solid red'}}>
-          <button type="button" onClick={() => handleMarkTaskAdDone(task.id)}>DONE</button>
-          <p>{task.id}</p>
-          <p>{task.description}</p>
-          <p>{task.done ? "SIM" : "NÃO"}</p>
-          <p>{task.createdAt.toLocaleString()}</p>
-          <button type="button" onClick={() => handleRemoveTask(task.id)}>REMOVE</button>
+    <div className="container">
+      <h1 className="title">REACT TODO APP</h1>
+
+      <div className="new-task-box">
+        <input
+          type="text"
+          value={taskDraft}
+          onChange={e => setTaskDraft(e.target.value)}
+        ></input>
+        <button type="button" onClick={handleAddTask}>ADD</button>
+        {errorMessage && <p>{errorMessage}</p>}
+      </div>
+
+      <div className="tasks-box">
+        {tasks.map(task => {
+          return <div>
+            <button type="button" onClick={() => handleMarkTaskAdDone(task.id)}>
+              DONE
+            </button>
+            <p>{task.id}</p>
+            <p>{task.description}</p>
+            <p>{task.done ? "YES" : "NO"}</p>
+            <p>{task.createdAt.toLocaleString()}</p>
+            <button type="button" onClick={() => handleRemoveTask(task.id)}>
+              REMOVE
+            </button>
+          </div>
+        })}
+
+        <div className="clear-button-box">
+          <button  type="button" onClick={handleClearTaskList}>Clear</button>
         </div>
-      })}
+      </div>
     </div>
   );
 }
