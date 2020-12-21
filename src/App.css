@@ -1,5 +1,5 @@
 html, body {
-  height: 100%;
+  min-height: 100%;
 }
 
 * {
@@ -58,9 +58,60 @@ body {
   color: royalblue;
 }
 
+.error-message {
+  color: white;
+}
+
 .tasks-box {
   margin-top: 30px;
   background-color: white;
+  padding: 10px
+}
+
+.task-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0px;
+  border-bottom: 1px solid #c5b2e4;
+}
+
+.task-box > div {
+  color: #544545;
+  font-size: 18px;
+}
+
+.task-box > div > label {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  color: #544545;
+  font-size: 18px;
+}
+
+.task-box > div > label > input {
+  margin-right: 10px;
+}
+
+.done-task {
+  text-decoration: line-through;
+  color: red;
+}
+
+.remove-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  border: none;
+  font-weight: bold;
+  font-size: 18px;
+  color: #dd7d6b;
+  background-color: transparent;
+}
+
+.remove-button:hover  {
+  opacity: 0.7;
 }
 
 .clear-button-box {
@@ -80,4 +131,9 @@ body {
 
 .clear-button-box button:hover {
   color: #FF4B2B;
+}
+
+.clear-button-box button:disabled {
+  color: #ccc;
+  cursor: not-allowed;
 }

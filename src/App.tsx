@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
 import { uuid } from 'uuidv4';
+import { FiTrash } from 'react-icons/fi'
 
 interface Task {
   id: string;
   description: string;
   done: boolean;
-  createdAt: Date;
+  createdAt: string;
 }
 
 function App() {
-  const [taskDraft, setTaskDraft] = useState<string>('create an awesome app with react');
+  const [taskDraft, setTaskDraft] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [tasks, setTasks] = useState<Task[]>([]);
 
@@ -42,10 +43,11 @@ function App() {
       id: uuid(),
       description: taskDraft,
       done: false,
-      createdAt: new Date()
+      createdAt: new Date().toLocaleString()
     };
 
     setTasks([...tasks, newTask]);
+    setTaskDraft('');
   }
 
   function handleRemoveTask(id: string) {
@@ -74,35 +76,49 @@ function App() {
   return (
     <div className="container">
       <h1 className="title">REACT TODO APP</h1>
-
-      <div className="new-task-box">
-        <input
-          type="text"
-          value={taskDraft}
-          onChange={e => setTaskDraft(e.target.value)}
-        ></input>
-        <button type="button" onClick={handleAddTask}>ADD</button>
-        {errorMessage && <p>{errorMessage}</p>}
-      </div>
+      <form onSubmit={e => { e.preventDefault(); handleAddTask() }}>
+        <div className="new-task-box">
+            <input
+              type="text"
+              value={taskDraft}
+              onChange={e => setTaskDraft(e.target.value)}
+            ></input>
+            <button type="button" onClick={handleAddTask}>ADD</button>
+          
+        </div>
+        {errorMessage && <div className="error-message">{errorMessage}</div>}
+      </form>
 
       <div className="tasks-box">
         {tasks.map(task => {
-          return <div>
-            <button type="button" onClick={() => handleMarkTaskAdDone(task.id)}>
-              DONE
-            </button>
-            <p>{task.id}</p>
-            <p>{task.description}</p>
-            <p>{task.done ? "YES" : "NO"}</p>
-            <p>{task.createdAt.toLocaleString()}</p>
-            <button type="button" onClick={() => handleRemoveTask(task.id)}>
-              REMOVE
+          return <div className="task-box">
+            <div>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={task.done}
+                  onChange={e => handleMarkTaskAdDone(task.id)}
+                />
+                <p className={task.done ? 'done-task' : ''}>{task.description}</p>
+              </label>
+            </div>
+            {/* <p>{task.createdAt}</p> */}
+            <button
+              className="remove-button"
+              type="button"
+              onClick={() => handleRemoveTask(task.id)}
+            >
+              <FiTrash />
             </button>
           </div>
         })}
 
         <div className="clear-button-box">
-          <button  type="button" onClick={handleClearTaskList}>Clear</button>
+          <button
+            type="button"
+            disabled={tasks.length === 0}
+            onClick={handleClearTaskList}
+          >Clear</button>
         </div>
       </div>
     </div>
